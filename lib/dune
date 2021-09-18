@@ -1,0 +1,6 @@
+(include_subdirs unqualified)
+
+(library
+ (name nanoid)
+ (public_name nanoid)
+ (libraries cryptokit))
