@@ -1,0 +1,5 @@
+variables:
+  PACKAGES: "gmp-dev zlib-dev"
+
+include:
+  - local: '/.logistic/ci/.gitlab-ci.yml'

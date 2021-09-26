@@ -1,9 +1,9 @@
 include Nanoid_intf
 
-(* This is the same rng buffering algorithm as the javascript
-   implementation. While we have no certainty it's actually faster
-   than calling Cryptokit every time, this hypothesis looks reasonable
-   until more advanced benchmarks are made. *)
+(* This is the same rng buffering algorithm as the javascript implementation.
+   While we have no certainty it's actually faster than calling Cryptokit every
+   time, this hypothesis looks reasonable until more advanced benchmarks are
+   made. *)
 let pseudo_seeded seed =
   let multiplier = 32 in
   let module R = struct
@@ -14,18 +14,18 @@ let pseudo_seeded seed =
     let random_bytes size =
       match !pool with
       | Some (buf, offset, len) when offset + size <= len ->
-          pool := Some (buf, offset + size, len);
-          (buf, offset)
+        pool := Some (buf, offset + size, len);
+        (buf, offset)
       | Some (buf, _, len) when size <= len ->
-          rng#random_bytes buf 0 len;
-          pool := Some (buf, size, len);
-          (buf, 0)
+        rng#random_bytes buf 0 len;
+        pool := Some (buf, size, len);
+        (buf, 0)
       | _ ->
-          let len = multiplier * size in
-          let buf = Bytes.create len in
-          rng#random_bytes buf 0 len;
-          pool := Some (buf, size, len);
-          (buf, 0)
+        let len = multiplier * size in
+        let buf = Bytes.create len in
+        rng#random_bytes buf 0 len;
+        pool := Some (buf, size, len);
+        (buf, 0)
   end in
   (module R : RNG)
 

@@ -20,4 +20,8 @@
  (synopsis "Nano ID implementation for OCaml")
  (depends
   (alcotest :with-test)
-  cryptokit))
+  cryptokit
+  (ocamlformat
+   (and
+    :dev
+    (= 0.17.0)))))
