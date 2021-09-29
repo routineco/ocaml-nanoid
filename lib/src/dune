@@ -1,0 +1,4 @@
+(library
+ (name nanoid)
+ (public_name nanoid)
+ (virtual_modules nanoid))

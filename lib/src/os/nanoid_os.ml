@@ -1,4 +1,4 @@
-include Nanoid_intf
+include Intf
 
 (* This is the same rng buffering algorithm as the javascript implementation.
    While we have no certainty it's actually faster than calling Cryptokit every
@@ -39,5 +39,7 @@ module Make (Rng : RNG) = struct
         alphabet.[Bytes.get_uint8 bytes (offset + i) land 0b00111111])
 end
 
-include
-  Make ((val pseudo_seeded @@ Printf.sprintf "%.16f" @@ Unix.gettimeofday ()))
+module Simple () = struct
+  include
+    Make ((val pseudo_seeded @@ Printf.sprintf "%.16f" @@ Unix.gettimeofday ()))
+end

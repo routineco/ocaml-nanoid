@@ -1,3 +1,21 @@
-(test
- (name test)
+(library
+ (name tests)
+ (modules tests)
  (libraries alcotest nanoid))
+
+(test
+ (name os)
+ (modules os)
+ (libraries alcotest tests nanoid.os))
+
+(executable
+ (name jsoo)
+ (modules jsoo)
+ (modes js)
+ (libraries alcotest tests js_of_ocaml nanoid.jsoo)
+ (optional))
+
+(rule
+ (alias runtest)
+ (action
+  (run node %{dep:jsoo.bc.js})))

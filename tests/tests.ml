@@ -7,9 +7,3 @@ let generate () =
     ids;
   let unique = List.sort_uniq String.compare ids in
   Alcotest.(check int "unicity" (List.length ids) (List.length unique))
-
-let () = generate ()
-
-let () =
-  let open Alcotest in
-  run "Nanoid" [ ("pseudo-seeded", [ test_case "generate" `Quick generate ]) ]

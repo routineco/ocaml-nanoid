@@ -1,0 +1,6 @@
+(library
+ (implements nanoid)
+ (libraries js_of_ocaml)
+ (name nanoid_jsoo_impl)
+ (optional)
+ (public_name nanoid.jsoo))

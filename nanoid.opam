@@ -11,9 +11,11 @@ depends: [
   "dune" {>= "2.8"}
   "alcotest" {with-test}
   "cryptokit"
+  "js_of_ocaml" {with-test}
   "ocamlformat" {dev & = "0.17.0"}
   "odoc" {with-doc}
 ]
+depopts: ["js_of_ocaml"]
 build: [
   ["dune" "subst"] {dev}
   [

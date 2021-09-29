@@ -21,7 +21,9 @@
  (depends
   (alcotest :with-test)
   cryptokit
+  (js_of_ocaml :with-test)
   (ocamlformat
    (and
     :dev
-    (= 0.17.0)))))
+    (= 0.17.0))))
+ (depopts js_of_ocaml))

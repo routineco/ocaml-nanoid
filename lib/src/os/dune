@@ -1,0 +1,12 @@
+(library
+ (name nanoid_os)
+ (public_name nanoid.nanoid_os)
+ (modules intf nanoid_os)
+ (libraries cryptokit))
+
+(library
+ (name nanoid_os_impl)
+ (public_name nanoid.os)
+ (modules nanoid)
+ (implements nanoid)
+ (libraries cryptokit nanoid_os))
