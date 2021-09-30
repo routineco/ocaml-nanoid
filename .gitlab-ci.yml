@@ -3,3 +3,18 @@ variables:
 
 include:
   - local: '/.logistic/ci/.gitlab-ci.yml'
+
+pages:
+  extends: .ocaml
+  stage: package
+  script:
+    - dune build @doc
+    - mkdir public
+    - cp -r _build/default/_doc/_html/* public/
+  artifacts:
+    paths:
+      - public
+  dependencies:
+    - check
+  needs:
+    - check
