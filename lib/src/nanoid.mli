@@ -18,6 +18,4 @@
     guarantees for security reasons. Use the [Nanoid_os] library to customize
     the random number generation. *)
 
-(** [nanoid ?size ()] generates a random Nano ID of size [size], which defaults
-    to 21. *)
-val nanoid : ?size:int -> unit -> string
+include Versions.VERSION_1_0
