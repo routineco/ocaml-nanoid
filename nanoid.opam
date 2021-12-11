@@ -5,8 +5,8 @@ synopsis: "Nano ID implementation for OCaml"
 maintainer: ["mefyl <mefyl@gruntech.org>"]
 authors: ["mefyl <mefyl@gruntech.org>"]
 license: "LGPL-3.0-or-later"
-homepage: "https://github.com/mefyl/nanoid"
-bug-reports: "https://github.com/mefyl/nanoid/issues"
+homepage: "https://github.com/routineco/ocaml-nanoid"
+bug-reports: "https://github.com/routineco/ocaml-nanoid/issues"
 depends: [
   "dune" {>= "2.8"}
   "alcotest" {with-test}
@@ -30,4 +30,4 @@ build: [
     "@doc" {with-doc}
   ]
 ]
-dev-repo: "git+https://github.com/mefyl/nanoid.git"
+dev-repo: "git+https://github.com/routineco/ocaml-nanoid.git"

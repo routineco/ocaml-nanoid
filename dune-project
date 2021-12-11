@@ -13,7 +13,7 @@
 (authors "mefyl <mefyl@gruntech.org>")
 
 (source
- (github mefyl/nanoid))
+ (github routineco/ocaml-nanoid))
 
 (package
  (name nanoid)
