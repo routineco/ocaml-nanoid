@@ -1,0 +1,51 @@
+FROM alpine:3.15.0 AS opam-base
+
+RUN apk add --no-cache coreutils docker-cli gcc git m4 make musl-dev opam perl pkgconfig openssh rclone
+ARG OCAML_VERSION
+RUN opam init  --compiler="$OCAML_VERSION" --disable-sandboxing --dot-profile=/etc/profile.d/opam.sh --shell-setup --verbose --yes && opam clean -a -c -s --logs -r && rm -rf /root/.opam/4.12.0/bin/*.byte
+RUN opam config set jobs $(nproc)
+RUN chmod a+x /root
+# ENV DUNE_CACHE=enabled
+# ENV DUNE_CACHE_TRANSPORT=direct
+# time rclone sync spaces:routine-cache/dune /root/.cache/dune
+# time rclone sync /root/.cache/dune spaces:routine-cache/dune
+ENV ENV="/etc/profile"
+ENV PATH="/root/.opam/$OCAML_VERSION/bin:$PATH"
+ARG AWS_SECRET_ACCESS_KEY
+RUN mkdir -p /root/.config/rclone && \
+printf > /root/.config/rclone/rclone.conf "\
+[spaces]\n\
+type = s3\n\
+provider = DigitalOcean\n\
+env_auth = false\n\
+access_key_id = BYOTIZ726XVJU542S3Z3\n\
+secret_access_key = $AWS_SECRET_ACCESS_KEY\n\
+endpoint = fra1.digitaloceanspaces.com\n"
+RUN cat /root/.config/rclone/rclone.conf
+# Jsoo misses this one, AFAICT it's a bug
+ENV LD_LIBRARY_PATH="/root/.opam/4.10.0/lib/stublibs/dllbase_internalhash_types_stubs.so"
+ADD .logistic/id_rsa* /root/.ssh/
+RUN chmod 600 /root/.ssh/id_rsa
+RUN ssh-keyscan gitlab.routine.co > /root/.ssh/known_hosts
+RUN opam repository add --all routine git@gitlab.routine.co:routine/opam
+# No recursive lookup available
+ARG PACKAGES
+RUN if test -n "$PACKAGES"; then apk add --no-cache $PACKAGES; fi
+ADD *.opam /root/
+ARG OPAM_PACKAGES
+RUN (if test -n "$AWS_SECRET_ACCESS_KEY"; then time rclone sync spaces:routine-cache/opam-download /root/.opam/download-cache; fi) && \
+    opam update && \
+    opam install --yes --deps-only --with-test /root && \
+    (if test -n "$OPAM_PACKAGES"; then opam install --yes $OPAM_PACKAGES; fi) && \
+    (if test -n "$OPAM_WITHOUT_PACKAGES"; then opam remove --yes $OPAM_WITHOUT_PACKAGES; fi) && \
+    (if test -n "$AWS_SECRET_ACCESS_KEY"; then time rclone sync /root/.opam/download-cache spaces:routine-cache/opam-download; fi) && \
+    opam clean -a -c -s --logs -r && \
+    rm -rf /root/.cache/dune /root/.opam/download-cache /root/.opam/4.12.0/.opam-switch/sources /root/.opam/repo
+ADD .exists package*.json yarn*.lock /root/
+RUN if test -e /root/package.json; then \
+    apk add --no-cache nodejs-current npm; \
+    npm install -g yarn; \
+    cd /root && yarn install --network-concurrency 1; \
+    fi
+ENV NODE_PATH=/root/node_modules
+ENTRYPOINT ["/bin/ash", "-l", "-c"]
