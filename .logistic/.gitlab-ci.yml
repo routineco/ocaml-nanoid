@@ -1,0 +1,12 @@
+stages:
+  - build
+
+docker-ci-builder:
+  stage: build
+  only:
+    - master
+  script:
+    - apk add --no-cache docker-cli
+    - docker build -f docker-ci-builder/Dockerfile docker-ci-builder -t $CI_REGISTRY_IMAGE/ci-builder
+    - echo "$CI_REGISTRY_PASSWORD" | docker login "$CI_REGISTRY" --username "$CI_REGISTRY_USER" --password-stdin
+    - docker push $CI_REGISTRY_IMAGE/ci-builder

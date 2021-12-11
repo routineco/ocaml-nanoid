@@ -1,0 +1,14 @@
+#!/bin/sh -e
+
+git clone --depth 1 git@gitlab.routine.co:routine/opam /tmp/opam
+for f in *.opam; do
+    NAME="${f%.opam}"
+    FILE="${NAME}.${CI_COMMIT_TAG}"
+    PKG_PATH="/tmp/opam/packages/$NAME/$FILE"
+    dune build "$FILE.opam"
+    mkdir -p "$PKG_PATH"
+    cp "_build/default/$FILE.opam" "$PKG_PATH/opam"
+    git -C "/tmp/opam" add "$PKG_PATH/opam"
+done
+GIT_COMMITTER_EMAIL="$(echo '$CI_COMMIT_AUTHOR' | sed 's/^.* <\(.*\)>$/\1/')" GIT_COMMITTER_NAME="$(echo '$CI_COMMIT_AUTHOR' | sed 's/ <.*>$//')" git -C "/tmp/opam" commit --author="$CI_COMMIT_AUTHOR" --message="Add $CI_PROJECT_NAME $CI_COMMIT_TAG."
+git -C "/tmp/opam" push
