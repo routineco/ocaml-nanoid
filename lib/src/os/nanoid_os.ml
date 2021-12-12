@@ -1,4 +1,4 @@
-include Intf
+include Versions.Intf
 
 (* This is the same rng buffering algorithm as the javascript implementation.
    While we have no certainty it's actually faster than calling Cryptokit every

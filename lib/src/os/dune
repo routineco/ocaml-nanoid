@@ -1,7 +1,7 @@
 (library
  (name nanoid_os)
  (public_name nanoid.nanoid_os)
- (modules intf nanoid_os)
+ (modules nanoid_os versions)
  (libraries cryptokit))
 
 (library
