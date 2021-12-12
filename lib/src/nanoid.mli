@@ -18,4 +18,5 @@
     guarantees for security reasons. Use the [Nanoid_os] library to customize
     the random number generation. *)
 
+(** @inline *)
 include Versions.VERSION_1_0
