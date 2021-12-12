@@ -6,6 +6,7 @@ maintainer: ["mefyl <mefyl@gruntech.org>"]
 authors: ["mefyl <mefyl@gruntech.org>"]
 license: "LGPL-3.0-or-later"
 homepage: "https://github.com/routineco/ocaml-nanoid"
+doc: "https://routineco.github.io/ocaml-nanoid/"
 bug-reports: "https://github.com/routineco/ocaml-nanoid/issues"
 depends: [
   "dune" {>= "2.8"}

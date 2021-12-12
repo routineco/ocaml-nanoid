@@ -15,6 +15,8 @@
 (source
  (github routineco/ocaml-nanoid))
 
+(documentation https://routineco.github.io/ocaml-nanoid/)
+
 (package
  (name nanoid)
  (synopsis "Nano ID implementation for OCaml")
