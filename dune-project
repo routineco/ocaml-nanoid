@@ -24,6 +24,8 @@
   (alcotest :with-test)
   cryptokit
   (js_of_ocaml :with-test)
+  (ocaml
+   (>= 4.08))
   (ocamlformat
    (and
     :dev
