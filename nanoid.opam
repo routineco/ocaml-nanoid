@@ -11,6 +11,7 @@ bug-reports: "https://github.com/routineco/ocaml-nanoid/issues"
 depends: [
   "dune" {>= "2.8"}
   "alcotest" {with-test}
+  "conf-npm" {with-test}
   "cryptokit"
   "js_of_ocaml" {with-test}
   "ocaml" {>= "4.08"}

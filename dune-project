@@ -22,6 +22,7 @@
  (synopsis "Nano ID implementation for OCaml")
  (depends
   (alcotest :with-test)
+  (conf-npm :with-test)
   cryptokit
   (js_of_ocaml :with-test)
   (ocaml

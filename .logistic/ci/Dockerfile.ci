@@ -43,7 +43,6 @@ RUN (if test -n "$AWS_SECRET_ACCESS_KEY"; then time rclone sync spaces:routine-c
     rm -rf /root/.cache/dune /root/.opam/download-cache /root/.opam/4.12.0/.opam-switch/sources /root/.opam/repo
 ADD .exists package*.json yarn*.lock /root/
 RUN if test -e /root/package.json; then \
-    apk add --no-cache nodejs-current npm; \
     npm install -g yarn; \
     cd /root && yarn install --network-concurrency 1; \
     fi
