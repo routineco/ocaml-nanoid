@@ -26,9 +26,5 @@
   cryptokit
   (js_of_ocaml :with-test)
   (ocaml
-   (>= 4.08))
-  (ocamlformat
-   (and
-    :dev
-    (= 0.17.0))))
+   (>= 4.08)))
  (depopts js_of_ocaml))
