@@ -36,7 +36,7 @@ ARG OPAM_PACKAGES
 RUN (if test -n "$AWS_SECRET_ACCESS_KEY"; then time rclone sync spaces:routine-cache/opam-download /root/.opam/download-cache; fi) && \
     opam update && \
     opam install --yes --deps-only --with-test /root && \
-    (if test -n "$OPAM_PACKAGES"; then opam install --yes $OPAM_PACKAGES; fi) && \
+    opam install --yes ocamlformat.0.17.0 $OPAM_PACKAGES && \
     (if test -n "$OPAM_WITHOUT_PACKAGES"; then opam remove --yes $OPAM_WITHOUT_PACKAGES; fi) && \
     (if test -n "$AWS_SECRET_ACCESS_KEY"; then time rclone sync /root/.opam/download-cache spaces:routine-cache/opam-download; fi) && \
     opam clean -a -c -s --logs -r && \
