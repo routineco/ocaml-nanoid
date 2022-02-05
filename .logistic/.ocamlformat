@@ -1,11 +1,8 @@
-version=0.17.0
+version=0.20.1
 
-break-cases=all
-break-fun-decl=smart
 cases-exp-indent=2
 doc-comments=before
 dock-collection-brackets=true
-if-then-else=k-r
 let-and=sparse
 parse-docstrings=true
 type-decl=sparse
