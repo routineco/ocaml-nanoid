@@ -1,4 +1,5 @@
 variables:
+  OPAM_PACKAGES: "odoc"
   PACKAGES: "gmp-dev zlib-dev"
 
 include:
