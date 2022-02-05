@@ -8,7 +8,6 @@ let pseudo_seeded seed =
   let multiplier = 32 in
   let module R = struct
     let rng = Cryptokit.Random.pseudo_rng seed
-
     let pool = ref None
 
     let random_bytes size =
