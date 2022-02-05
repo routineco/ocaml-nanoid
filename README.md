@@ -1,5 +1,7 @@
 # Nano ID for OCaml %%VERSION%%
 
+[![OCaml-CI Build Status](https://img.shields.io/endpoint?url=https%3A%2F%2Fci.ocamllabs.io%2Fbadge%2Froutineco%2Focaml-nanoid%2Fmaster&logo=ocaml)](https://ci.ocamllabs.io/github/routineco/ocaml-nanoid)
+
 This is an implementation of [Nano ID](https://github.com/ai/nanoid),
 a tiny, secure, URL-friendly, unique string ID generator.
 
