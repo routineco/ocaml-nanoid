@@ -9,7 +9,7 @@ homepage: "https://github.com/routineco/ocaml-nanoid"
 doc: "https://routineco.github.io/ocaml-nanoid/"
 bug-reports: "https://github.com/routineco/ocaml-nanoid/issues"
 depends: [
-  "dune" {>= "2.8"}
+  "dune" {>= "3.0"}
   "alcotest" {with-test}
   "conf-npm" {with-test}
   "cryptokit"
