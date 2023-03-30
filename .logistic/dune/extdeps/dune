@@ -1,0 +1,4 @@
+(executable
+ (name extdeps)
+ (optional)
+ (libraries cmdliner opam-file-format sexplib shexp.process stdio))

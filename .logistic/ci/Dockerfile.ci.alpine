@@ -1,0 +1,49 @@
+FROM alpine:3.16.2 AS opam-base
+
+# No `apk --no-cache` because it makes `conf-pkg-config` fail.
+# See https://github.com/ocaml/opam-repository/issues/22094
+RUN apk add bash coreutils docker-cli gcc git linux-headers m4 make musl-dev opam openssh
+RUN opam init --bare --disable-sandboxing --dot-profile=/etc/profile.d/opam.sh --shell-setup --verbose --yes
+
+FROM opam-base
+
+ENV OPAMROOTISOK=1
+ENV ENV="/etc/profile"
+ADD .logistic/id_rsa* /root/.ssh/
+RUN chmod 600 /root/.ssh/id_rsa
+RUN ssh-keyscan gitlab.routine.co > /root/.ssh/known_hosts
+# No recursive lookup available
+ARG PACKAGES
+RUN if test -n "$PACKAGES"; then apk add --no-cache $PACKAGES; fi
+ADD .exists *.opam.extdeps /root/
+RUN opam update && \
+    if EXTDEPS=$(find /root -name '*.extdeps'); then \
+      for f in /root/*.extdeps; do mv ${f} ${f%.extdeps}; done \
+    fi && \
+    opam switch create /root --confirm-level=unsafe-yes --deps-only --with-test --with-doc && \
+    opam config --switch=/root set jobs $(nproc) && \
+    opam switch --switch=/root set-invariant ocamlformat.0.24.1 && \
+    opam clean --switch=/root -a -c -s --logs -r && \
+    rm -rf /root/.cache/dune
+ENV OPAMSWITCH=/root
+
+ARG OPAM_PACKAGES OPAM_WITHOUT_PACKAGES
+ADD .exists *.opam /root/
+RUN opam repository add --all routine git@gitlab.routine.co:routine/opam && \
+    opam update && \
+    opam install --confirm-level=unsafe-yes --deps-only --with-test /root && \
+    (if test -n "$OPAM_PACKAGES"; then opam install --confirm-level=unsafe-yes $OPAM_PACKAGES; fi) && \
+    (if test -n "$OPAM_WITHOUT_PACKAGES"; then opam remove --yes $OPAM_WITHOUT_PACKAGES; fi) && \
+    opam clean -a -c -s --logs -r && \
+    rm -rf /root/.cache/dune
+ADD .exists package*.json yarn*.lock /root/
+RUN if test -e /root/package.json; then \
+    apk add --no-cache npm && \
+    npm install -g yarn && \
+    cd /root && yarn install --ignore-engines --network-concurrency 1 && \
+    rm -rf /usr/local/share/.cache /root/.cache /tmp/*; \
+    fi
+ENV NODE_PATH=/root/node_modules
+ARG DUNE_PACKAGES
+ENV DUNE_PACKAGES="$DUNE_PACKAGES"
+ENTRYPOINT ["/bin/ash", "-l", "-c"]
