@@ -1,11 +1,18 @@
+(dirs :standard .logistic)
+
 (rule
- (target nanoid.%{version:nanoid}.opam)
- (deps
-  (:opam nanoid.opam))
+ (target dune.inc)
+ (alias extdeps)
+ (mode (promote))
  (action
   (with-stdout-to
    %{target}
-   (progn
-    (cat %{opam})
-    (echo
-     "url {\n  src: \"git://git@gitlab.routine.co:routine/nanoid#%{version:nanoid}\"\n}\n")))))
+   (run
+    %{dep:.logistic/dune/extdeps/extdeps.exe}
+    generate
+    --cross
+    cryptokit
+    --cross-exclude
+    js_of_ocaml))))
+
+(include dune.inc)
