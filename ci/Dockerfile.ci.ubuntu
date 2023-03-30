@@ -1,0 +1,65 @@
+# Ubuntu 22.04 base
+# There's no well-supported Swift on Alpine Linux.
+FROM swift:5.7 AS opam-base
+
+# Dirty fix to maintain compatibility with alpine CI images.
+RUN apt-get update && apt-get install --yes --no-install-recommends busybox
+RUN ln -f /usr/bin/busybox /bin/sh && \
+    ln -f /usr/bin/busybox /sbin/sh && \
+    ln -f /usr/bin/busybox /usr/bin/sh
+
+# Docker CLI sources
+RUN apt-get install --no-install-recommends --yes linux-headers-generic ca-certificates curl gnupg lsb-release  && mkdir -p /etc/apt/keyrings &&  curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg && echo \
+    "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+  $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+# System dependencies
+RUN apt-get update && apt-get install --no-install-recommends --yes \
+        bash coreutils git opam build-essential \
+        docker-ce-cli openssh-client && apt-get clean
+
+# OCaml setup
+ARG OCAML_VERSION
+RUN opam --version
+RUN opam init  --bare --disable-sandboxing --dot-profile=/etc/profile.d/opam.sh --shell-setup --verbose --yes && opam clean -a -c -s --logs -r && rm -rf /root/.opam/$OCAML_VERSION/bin/*.byte
+
+FROM opam-base
+ARG OCAML_VERSION
+ENV OPAMROOTISOK=1
+ENV ENV="/etc/profile"
+ADD .logistic/id_rsa* /root/.ssh/
+RUN chmod 600 /root/.ssh/id_rsa
+RUN ssh-keyscan gitlab.routine.co > /root/.ssh/known_hosts
+# No recursive lookup available
+ARG PACKAGES
+RUN if test -n "$PACKAGES"; then apt-get install --yes $PACKAGES; fi
+ADD .exists *.opam.extdeps /root/
+RUN opam update && \
+    if EXTDEPS=$(find /root -name '*.extdeps'); then \
+      for f in /root/*.extdeps; do mv ${f} ${f%.extdeps}; done \
+    fi && \
+    opam switch create /root --confirm-level=unsafe-yes --deps-only --with-test --with-doc && \
+    opam config --switch=/root set jobs $(nproc) && \
+    opam switch --switch=/root set-invariant ocamlformat.0.24.1 && \
+    opam clean --switch=/root -a -c -s --logs -r && \
+    rm -rf /root/.cache/dune
+ENV OPAMSWITCH=/root
+
+ARG OPAM_PACKAGES OPAM_WITHOUT_PACKAGES
+ADD .exists *.opam /root/
+RUN opam repository add --all routine git@gitlab.routine.co:routine/opam && \
+    opam update && \
+    opam install --confirm-level=unsafe-yes --deps-only --with-test /root && \
+    (if test -n "$OPAM_PACKAGES"; then opam install --confirm-level=unsafe-yes $OPAM_PACKAGES; fi) && \
+    (if test -n "$OPAM_WITHOUT_PACKAGES"; then opam remove --yes $OPAM_WITHOUT_PACKAGES; fi) && \
+    opam clean -a -c -s --logs -r && \
+    rm -rf /root/.cache/dune
+ADD .exists package*.json yarn*.lock /root/
+RUN if test -e /root/package.json; then \
+    npm install -g yarn && \
+    cd /root && yarn install --ignore-engines --network-concurrency 1 && \
+    rm -rf /usr/local/share/.cache /root/.cache /tmp/*; \
+    fi
+ENV NODE_PATH=/root/node_modules
+ARG DUNE_PACKAGES
+ENV DUNE_PACKAGES="$DUNE_PACKAGES"
