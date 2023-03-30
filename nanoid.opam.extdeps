@@ -1,0 +1,59 @@
+opam-version: "2.0"
+name: "nanoid"
+version: "1.0.1"
+synopsis: "Nano ID implementation for OCaml"
+maintainer: "mefyl <mefyl@gruntech.org>"
+authors: "mefyl <mefyl@gruntech.org>"
+license: "LGPL-3.0-or-later"
+homepage: "https://github.com/routineco/ocaml-nanoid"
+doc: "https://routineco.github.io/ocaml-nanoid/"
+bug-reports: "https://github.com/routineco/ocaml-nanoid/issues"
+depends: [
+  "ocamlformat" {= "0.24.1"}
+  "opam-file-format"
+  "sexplib"
+  "shexp"
+  "alcotest" {= "1.7.0" & with-test}
+  "astring" {= "0.8.5" & with-test}
+  "base-bigarray" {= "base"}
+  "base-threads" {= "base"}
+  "base-unix" {= "base"}
+  "cmdliner" {= "1.1.1"}
+  "conf-gmp" {= "4"}
+  "conf-gmp-powm-sec" {= "3"}
+  "conf-npm" {= "1" & with-test}
+  "conf-pkg-config" {= "2"}
+  "conf-zlib" {= "1"}
+  "cppo" {= "1.6.9"}
+  "cryptokit" {= "1.18"}
+  "csexp" {= "1.5.1"}
+  "dune" {= "3.7.0"}
+  "dune-configurator" {= "3.7.0"}
+  "fmt" {= "0.9.0" & with-test}
+  "gen" {= "1.1"}
+  "js_of_ocaml" {= "5.1.1" & with-test}
+  "js_of_ocaml-compiler" {= "5.1.1"}
+  "menhir" {= "20220210"}
+  "menhirLib" {= "20220210"}
+  "menhirSdk" {= "20220210"}
+  "ocaml" {= "4.14.1"}
+  "ocaml-base-compiler" {= "4.14.1"}
+  "ocaml-compiler-libs" {= "v0.12.4"}
+  "ocaml-config" {= "2"}
+  "ocaml-options-vanilla" {= "1"}
+  "ocaml-syntax-shims" {= "1.0.0" & with-test}
+  "ocamlbuild" {= "0.14.2" & with-test}
+  "ocamlfind" {= "1.9.6"}
+  "ppx_derivers" {= "1.2.1"}
+  "ppxlib" {= "0.29.1"}
+  "re" {= "1.10.4" & with-test}
+  "sedlex" {= "3.1"}
+  "seq" {= "base"}
+  "sexplib0" {= "v0.15.1"}
+  "stdlib-shims" {= "0.3.0"}
+  "topkg" {= "1.0.7" & with-test}
+  "uutf" {= "1.0.3" & with-test}
+  "yojson" {= "2.0.2"}
+  "zarith" {= "1.12"}
+]
+dev-repo: "git+https://github.com/routineco/ocaml-nanoid.git"
